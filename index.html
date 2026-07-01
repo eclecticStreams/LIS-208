@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet &amp; Information Searching — Practice Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#0B1F3A;
+    --navy-700:#16305A;
+    --navy-500:#33507A;
+    --gold-500:#C9A227;
+    --gold-300:#E4C766;
+    --cream-100:#FBF8F1;
+    --cream-200:#F3EDDD;
+    --ink-900:#1B2430;
+    --ink-500:#5B6472;
+    --line:#D8CFB6;
+    --good:#2E7D4F;
+    --bad:#B0402E;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--navy-900);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(201,162,39,0.10), transparent 45%),
+      radial-gradient(circle at 90% 90%, rgba(201,162,39,0.06), transparent 40%);
+    color:var(--ink-900);
+    font-family:'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:36px 16px 60px;
+  }
+  .stage{width:100%;max-width:760px;}
+
+  .masthead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:0 6px 18px;
+    border-bottom:1px solid rgba(228,199,102,0.35);
+    margin-bottom:26px;
+  }
+  .masthead .dept{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold-300);
+  }
+  .masthead .catno{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:rgba(255,255,255,0.45);
+    letter-spacing:.08em;
+  }
+
+  /* ===== Catalog card (signature element) ===== */
+  .card{
+    position:relative;
+    background:var(--cream-100);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:0 24px 50px -20px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.4) inset;
+    padding:38px 36px 32px;
+  }
+  .card::before{
+    /* punch hole, like an index card */
+    content:"";
+    position:absolute;
+    top:16px; left:50%;
+    transform:translateX(-50%);
+    width:14px;height:14px;
+    border-radius:50%;
+    background:var(--navy-900);
+    box-shadow:0 0 0 3px var(--cream-100), 0 0 0 4px var(--line);
+  }
+  .card .tab{
+    position:absolute;
+    top:-13px; left:36px;
+    background:var(--gold-500);
+    color:var(--navy-900);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    font-weight:600;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    padding:5px 12px;
+    border-radius:2px 2px 0 0;
+  }
+  .card-inner{margin-top:14px;}
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(28px,4vw,38px);
+    line-height:1.08;
+    color:var(--navy-900);
+    margin:6px 0 8px;
+  }
+  .lede{
+    color:var(--ink-500);
+    font-size:15.5px;
+    line-height:1.55;
+    margin:0 0 28px;
+    max-width:52ch;
+  }
+
+  /* ===== Setup screen ===== */
+  .field-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--navy-500);
+    margin:0 0 12px;
+    display:block;
+  }
+  .count-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .count-btn{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:20px;
+    background:#fff;
+    border:1px solid var(--line);
+    color:var(--navy-900);
+    padding:14px 8px 10px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    text-align:center;
+    transition:border-color .15s ease, transform .1s ease, background .15s ease;
+  }
+  .count-btn span{
+    display:block;
+    font-family:'Source Sans 3', sans-serif;
+    font-weight:500;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-500);
+    margin-top:3px;
+  }
+  .count-btn:hover{border-color:var(--gold-500); transform:translateY(-1px);}
+  .count-btn.active{
+    background:var(--navy-900);
+    border-color:var(--navy-900);
+    color:var(--gold-300);
+  }
+  .count-btn.active span{color:rgba(228,199,102,0.75);}
+
+  .custom-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:28px;
+    padding-top:4px;
+  }
+  .custom-row input[type="number"]{
+    width:90px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:15px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#fff;
+    color:var(--navy-900);
+  }
+  .custom-row label{font-size:13.5px; color:var(--ink-500);}
+
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 0;
+    border-top:1px dashed var(--line);
+  }
+  .toggle-row:last-of-type{border-bottom:1px dashed var(--line); margin-bottom:28px;}
+  .toggle-row .t-label{font-size:14px; color:var(--ink-900); font-weight:600;}
+  .toggle-row .t-sub{font-size:12.5px; color:var(--ink-500); margin-top:2px;}
+  .switch{
+    position:relative; width:42px; height:24px; flex:none; cursor:pointer;
+  }
+  .switch input{opacity:0; width:0; height:0; position:absolute;}
+  .switch .track{
+    position:absolute; inset:0; background:#D8CFB6; border-radius:20px; transition:.15s;
+  }
+  .switch .track::after{
+    content:""; position:absolute; top:3px; left:3px; width:18px; height:18px;
+    background:#fff; border-radius:50%; transition:.15s;
+    box-shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+  .switch input:checked + .track{background:var(--navy-700);}
+  .switch input:checked + .track::after{transform:translateX(18px); background:var(--gold-300);}
+
+  .btn-primary{
+    font-family:'Source Sans 3', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.01em;
+    background:var(--gold-500);
+    color:var(--navy-900);
+    border:none;
+    padding:15px 26px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    width:100%;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .btn-primary:hover{background:var(--gold-300); transform:translateY(-1px);}
+  .btn-primary:active{transform:translateY(0);}
+  .btn-primary:disabled{opacity:.5; cursor:not-allowed; transform:none;}
+
+  .btn-ghost{
+    font-family:'Source Sans 3', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    background:transparent;
+    color:var(--navy-500);
+    border:1px solid var(--line);
+    padding:12px 20px;
+    border-radius:var(--radius);
+    cursor:pointer;
+  }
+  .btn-ghost:hover{border-color:var(--navy-500); color:var(--navy-900);}
+
+  /* ===== Quiz screen ===== */
+  .progress-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:rgba(255,255,255,0.55);
+    padding:0 6px;
+  }
+  .progress-row .score-tag{color:var(--gold-300);}
+  .progress-track{
+    height:4px; background:rgba(255,255,255,0.12); border-radius:4px; margin-bottom:22px; overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; background:linear-gradient(90deg, var(--gold-500), var(--gold-300));
+    width:0%; transition:width .3s ease;
+  }
+
+  .q-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--gold-500);
+    margin-bottom:10px;
+  }
+  .q-text{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(19px,2.6vw,23px);
+    line-height:1.35;
+    color:var(--navy-900);
+    margin:0 0 26px;
+  }
+
+  .options{list-style:none; margin:0 0 26px; padding:0;}
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin-bottom:10px;
+    background:#fff;
+    cursor:pointer;
+    transition:border-color .12s ease, background .12s ease, transform .08s ease;
+  }
+  .option:hover{border-color:var(--navy-500);}
+  .option .letter{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:12.5px;
+    color:var(--navy-500);
+    border:1px solid var(--line);
+    border-radius:50%;
+    width:24px;height:24px;
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+    background:var(--cream-200);
+  }
+  .option .otext{font-size:15px; line-height:1.45; padding-top:2px;}
+
+  .option.chosen{border-color:var(--navy-700); background:var(--cream-200);}
+  .option.chosen .letter{background:var(--navy-700); border-color:var(--navy-700); color:#fff;}
+
+  .option.correct{border-color:var(--good); background:#EAF4EC;}
+  .option.correct .letter{background:var(--good); border-color:var(--good); color:#fff;}
+  .option.incorrect{border-color:var(--bad); background:#FBEBE7;}
+  .option.incorrect .letter{background:var(--bad); border-color:var(--bad); color:#fff;}
+  .option.disabled{cursor:default;}
+
+  .feedback{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:.03em;
+    margin:-10px 0 20px;
+    min-height:16px;
+  }
+  .feedback.good{color:var(--good);}
+  .feedback.bad{color:var(--bad);}
+
+  .nav-row{display:flex; justify-content:flex-end;}
+  .nav-row .btn-primary{width:auto; padding:14px 30px;}
+
+  /* ===== Results screen ===== */
+  .score-hero{
+    text-align:center;
+    padding:10px 0 28px;
+  }
+  .score-num{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(56px,10vw,80px);
+    color:var(--navy-900);
+    line-height:1;
+  }
+  .score-num sup{font-size:0.35em; color:var(--ink-500); font-weight:500;}
+  .score-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--gold-500);
+    margin-top:8px;
+  }
+  .score-remark{color:var(--ink-500); font-size:14.5px; margin-top:14px;}
+
+  .review-list{list-style:none; margin:24px 0; padding:0; border-top:1px dashed var(--line);}
+  .review-item{
+    padding:16px 4px;
+    border-bottom:1px dashed var(--line);
+  }
+  .review-q{font-weight:600; font-size:14.5px; color:var(--navy-900); margin-bottom:8px; line-height:1.4;}
+  .review-row{font-size:13.5px; margin-bottom:3px; line-height:1.4;}
+  .review-row.your{color:var(--bad);}
+  .review-row.right{color:var(--good);}
+  .review-row b{font-family:'JetBrains Mono', monospace; font-size:11.5px; margin-right:5px;}
+
+  .action-row{display:flex; gap:10px; margin-top:10px;}
+  .action-row .btn-primary{flex:1;}
+
+  .hidden{display:none !important;}
+
+  footer{
+    text-align:center;
+    color:rgba(255,255,255,0.3);
+    font-size:11.5px;
+    font-family:'JetBrains Mono', monospace;
+    margin-top:26px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .card{padding:30px 20px 26px;}
+    .count-grid{grid-template-columns:repeat(2,1fr);}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="masthead">
+    <div class="dept">Dept. of Library &amp; Information Science</div>
+    <div class="catno" id="catno">CAT. NO. INS-301</div>
+  </div>
+
+  <!-- ===== SETUP SCREEN ===== -->
+  <section id="setup" class="card">
+    <div class="tab">Study Companion</div>
+    <div class="card-inner">
+      <h1>Internet &amp; Information Searching</h1>
+      <p class="lede">301 questions drawn from the full course companion — internet fundamentals, networks, search tools, internet uses, email, the search process, and internet usage in Nigeria. Pick a session length and go.</p>
+
+      <span class="field-label">How many questions?</span>
+      <div class="count-grid" id="countGrid">
+        <button class="count-btn" data-count="10">10<span>Quick</span></button>
+        <button class="count-btn" data-count="20">20<span>Short</span></button>
+        <button class="count-btn active" data-count="30">30<span>Standard</span></button>
+        <button class="count-btn" data-count="50">50<span>Extended</span></button>
+        <button class="count-btn" data-count="100">100<span>Deep dive</span></button>
+        <button class="count-btn" data-count="301">All 301<span>Full bank</span></button>
+      </div>
+
+      <div class="custom-row">
+        <label for="customCount">Or choose a custom number (1–301):</label>
+      </div>
+      <div class="custom-row" style="margin-top:-14px;">
+        <input type="number" id="customCount" min="1" max="301" placeholder="e.g. 45">
+        <button class="btn-ghost" id="applyCustom">Use this</button>
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="t-label">Shuffle questions</div>
+          <div class="t-sub">Random order each session</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="shuffleQ" checked><span class="track"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="t-label">Shuffle answer choices</div>
+          <div class="t-sub">Randomize A–D positions</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="shuffleO" checked><span class="track"></span></label>
+      </div>
+
+      <button class="btn-primary" id="startBtn">Begin session — 30 questions</button>
+    </div>
+  </section>
+
+  <!-- ===== QUIZ SCREEN ===== -->
+  <section id="quiz" class="hidden">
+    <div class="progress-row">
+      <span id="progressText">Card 1 of 30</span>
+      <span class="score-tag" id="scoreText">Score: 0</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="card">
+      <div class="tab" id="chapterTab">Chapter</div>
+      <div class="card-inner">
+        <div class="q-eyebrow" id="qEyebrow">Question 1</div>
+        <h2 class="q-text" id="qText"></h2>
+        <ul class="options" id="optionsList"></ul>
+        <div class="feedback" id="feedback"></div>
+        <div class="nav-row">
+          <button class="btn-primary" id="nextBtn" disabled>Next question</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <section id="results" class="hidden card">
+    <div class="tab">Results</div>
+    <div class="card-inner">
+      <div class="score-hero">
+        <div class="score-num" id="finalScore">0<sup>/0</sup></div>
+        <div class="score-label" id="finalPct">0% correct</div>
+        <div class="score-remark" id="remark"></div>
+      </div>
+
+      <ul class="review-list" id="reviewList"></ul>
+
+      <div class="action-row">
+        <button class="btn-ghost" id="retakeSameBtn">Retake same set</button>
+        <button class="btn-primary" id="newSessionBtn">New session</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>LAUTECH · MCM / LIS Study Companion &mdash; for revision purposes only</footer>
+</div>
+
+<script>
+const QUESTIONS = [{"num": 1, "q": "What is the Internet?", "options": ["A global system of interconnected computer networks", "A single large computer", "A type of software application", "A private company network"], "answer": 0}, {"num": 2, "q": "The Internet was originally developed for which purpose?", "options": ["Commercial trade", "Military and academic communication", "Entertainment", "Social networking"], "answer": 1}, {"num": 3, "q": "Which organization is credited with developing ARPANET, the precursor to the Internet?", "options": ["NASA", "DARPA", "MIT", "IBM"], "answer": 1}, {"num": 4, "q": "The World Wide Web (WWW) was invented by:", "options": ["Bill Gates", "Tim Berners-Lee", "Steve Jobs", "Vint Cerf"], "answer": 1}, {"num": 5, "q": "Internet searching refers to:", "options": ["Browsing social media", "The process of finding information on the Internet using tools and strategies", "Downloading files from servers", "Sending emails online"], "answer": 1}, {"num": 6, "q": "Which of the following best describes a search engine?", "options": ["A hardware device for internet access", "A program that searches and indexes web content", "A type of web browser", "A social networking platform"], "answer": 1}, {"num": 7, "q": "Which was one of the first search engines ever created?", "options": ["Google", "Archie", "Yahoo", "Bing"], "answer": 1}, {"num": 8, "q": "The term 'Internet' is a shortened form of:", "options": ["Internal network", "Interactive network", "Internetwork", "International network"], "answer": 2}, {"num": 9, "q": "Which protocol is fundamental to data transmission on the Internet?", "options": ["HTTP", "TCP/IP", "FTP", "SMTP"], "answer": 1}, {"num": 10, "q": "A URL stands for:", "options": ["Uniform Resource Locator", "Universal Reading Link", "Unified Resource Library", "Unlimited Retrieval Language"], "answer": 0}, {"num": 11, "q": "Information retrieval in the context of library and information science refers to:", "options": ["Printing books", "The process of obtaining information from stored data", "Borrowing physical materials", "Cataloguing library books"], "answer": 1}, {"num": 12, "q": "Which of these is NOT a characteristic of Internet information?", "options": ["Abundance", "Diversity", "Always peer-reviewed", "Accessibility"], "answer": 2}, {"num": 13, "q": "A hyperlink is:", "options": ["A type of computer virus", "A clickable element that leads to another resource", "A search engine algorithm", "A network cable"], "answer": 1}, {"num": 14, "q": "The concept of information overload on the Internet refers to:", "options": ["Slow internet speed", "Too much irrelevant or excessive information making it hard to find what is needed", "Lack of available information", "Server crashes"], "answer": 1}, {"num": 15, "q": "Which of the following is a benefit of the Internet for information searching?", "options": ["Unlimited physical storage", "Access to vast amounts of information quickly", "Guaranteed accuracy of all information", "No need for evaluation"], "answer": 1}, {"num": 16, "q": "Boolean operators used in internet searching include:", "options": ["AND, OR, NOT", "PLUS, MINUS, TIMES", "IF, THEN, ELSE", "GET, POST, PUT"], "answer": 0}, {"num": 17, "q": "Using quotation marks in a search engine query results in:", "options": ["Excluding those words from results", "Searching for the exact phrase", "Broader search results", "Filtering by date"], "answer": 1}, {"num": 18, "q": "Which of the following is an example of a subject directory?", "options": ["Google", "Yahoo Directory", "Bing", "DuckDuckGo"], "answer": 1}, {"num": 19, "q": "Critical evaluation of Internet sources is important because:", "options": ["Internet information is always free", "Not all information online is accurate or reliable", "Search engines rank by credibility", "Libraries own the Internet"], "answer": 1}, {"num": 20, "q": "The invisible web (deep web) refers to:", "options": ["Sites blocked by governments", "Web content not indexed by standard search engines", "Dark web criminal activity", "Broken hyperlinks"], "answer": 1}, {"num": 21, "q": "Which skill is most important for effective Internet searching?", "options": ["Fast typing speed", "Ability to formulate precise queries", "Owning a powerful computer", "Having a large monitor"], "answer": 1}, {"num": 22, "q": "A search query is:", "options": ["A type of web browser", "A word or phrase entered into a search engine to find information", "An internet service provider", "A computer programming language"], "answer": 1}, {"num": 23, "q": "Which of the following is NOT a search engine?", "options": ["Google", "Bing", "Wikipedia", "Yahoo"], "answer": 2}, {"num": 24, "q": "The CRAAP test in information evaluation stands for:", "options": ["Currency, Relevance, Authority, Accuracy, Purpose", "Content, Reliability, Authenticity, Availability, Purpose", "Currency, Reasoning, Authority, Authenticity, Purpose", "Content, Relevance, Accuracy, Authority, Purpose"], "answer": 0}, {"num": 25, "q": "Metasearch engines are tools that:", "options": ["Index websites manually", "Search multiple search engines simultaneously", "Only search academic databases", "Provide maps and directions"], "answer": 1}, {"num": 26, "q": "Internet searching skills are particularly important in library and information science because:", "options": ["Librarians build computers", "Librarians help users locate and evaluate information resources", "Libraries no longer hold physical books", "Librarians design websites"], "answer": 1}, {"num": 27, "q": "Which of the following best describes 'relevance ranking' in search engines?", "options": ["Ranking results by file size", "Ordering results by how closely they match the query", "Sorting alphabetically", "Showing only paid results first"], "answer": 1}, {"num": 28, "q": "The first graphical web browser was called:", "options": ["Netscape", "Mosaic", "Internet Explorer", "Firefox"], "answer": 1}, {"num": 29, "q": "Information literacy refers to:", "options": ["The ability to type quickly", "Skills to recognize, locate, evaluate, and use information effectively", "Knowing how to build websites", "Being literate in computer programming"], "answer": 1}, {"num": 30, "q": "Which of the following is a truncation symbol used in database searching?", "options": ["@ (at sign)", "* (asterisk)", "# (hash)", "& (ampersand)"], "answer": 1}, {"num": 31, "q": "Wildcards in search queries are used to:", "options": ["Search for images only", "Replace unknown characters in a word to broaden search", "Filter results by language", "Limit results to a specific country"], "answer": 1}, {"num": 32, "q": "The term 'surfing the Internet' means:", "options": ["Playing water sports online", "Casually browsing through web pages", "Downloading large files", "Setting up a network"], "answer": 1}, {"num": 33, "q": "An IP address is:", "options": ["A website's brand name", "A unique numerical label assigned to a device on a network", "A type of internet virus", "A search engine algorithm"], "answer": 1}, {"num": 34, "q": "Which of the following is a disadvantage of using the Internet for research?", "options": ["Fast access to information", "Information can be inaccurate or outdated", "Wide geographic reach", "Multiple viewpoints available"], "answer": 1}, {"num": 35, "q": "Domain names in URLs help identify:", "options": ["The file format of a document", "The website or organization hosting the content", "The search engine used", "The user's location"], "answer": 1}, {"num": 36, "q": "The suffix '.edu' in a URL typically indicates:", "options": ["An e-commerce website", "An educational institution", "A government agency", "An entertainment site"], "answer": 1}, {"num": 37, "q": "Which of the following is the most reliable source of academic information online?", "options": ["Personal blogs", "Peer-reviewed journal databases", "Social media posts", "Wikipedia"], "answer": 1}, {"num": 38, "q": "The Internet was made publicly available approximately in which decade?", "options": ["1970s", "1980s", "1990s", "2000s"], "answer": 2}, {"num": 39, "q": "Phishing on the Internet refers to:", "options": ["Searching for fish-related content", "Fraudulent attempts to steal personal information", "Slowing down internet speed", "Filtering search results"], "answer": 1}, {"num": 40, "q": "A web crawler is a program that:", "options": ["Fixes broken links on websites", "Automatically browses and indexes web content", "Creates web pages", "Manages email servers"], "answer": 1}, {"num": 41, "q": "The concept of 'keyword searching' involves:", "options": ["Using graphical icons to search", "Entering specific words related to the topic into a search engine", "Voice-activated searching only", "Browsing subject categories"], "answer": 1}, {"num": 42, "q": "Which of the following is a specialized search engine for academic research?", "options": ["Google Images", "Google Scholar", "Google Maps", "Google Shopping"], "answer": 1}, {"num": 43, "q": "The OPAC in a library refers to:", "options": ["Online Public Access Catalog", "Open Publishing Academic Content", "Organized Print Access Center", "Optional Print Archive Collection"], "answer": 0}, {"num": 44, "q": "Information on the Internet is primarily stored on:", "options": ["CD-ROMs", "Servers", "Floppy disks", "Library shelves"], "answer": 1}, {"num": 45, "q": "Which of the following is an example of a primary source found online?", "options": ["A summary of a research paper", "The original text of a government report", "A review article", "A news commentary"], "answer": 1}, {"num": 46, "q": "A computer network is defined as:", "options": ["A single isolated computer", "Two or more computers connected to share resources", "An internet service provider", "A set of software applications"], "answer": 1}, {"num": 47, "q": "LAN stands for:", "options": ["Long Area Network", "Local Area Network", "Limited Access Network", "Logical Application Network"], "answer": 1}, {"num": 48, "q": "WAN stands for:", "options": ["Wide Area Network", "Wireless Access Node", "Web Application Network", "Wired Area Node"], "answer": 0}, {"num": 49, "q": "Which network type covers the smallest geographical area?", "options": ["WAN", "MAN", "LAN", "PAN"], "answer": 2}, {"num": 50, "q": "A MAN (Metropolitan Area Network) typically covers:", "options": ["A single building", "A city or metropolitan area", "Multiple countries", "A single room"], "answer": 1}, {"num": 51, "q": "Which device is used to connect multiple networks and route data between them?", "options": ["Switch", "Router", "Modem", "Hub"], "answer": 1}, {"num": 52, "q": "A modem is a device that:", "options": ["Amplifies wireless signals", "Converts digital signals to analog and vice versa for transmission", "Stores data permanently", "Connects computers in a LAN"], "answer": 1}, {"num": 53, "q": "ISP stands for:", "options": ["Internet Service Provider", "Internal System Protocol", "Integrated Software Package", "Internet Security Program"], "answer": 0}, {"num": 54, "q": "Which of the following is a wireless network standard widely used for local connections?", "options": ["Bluetooth only", "Wi-Fi (IEEE 802.11)", "DSL", "Fiber optic"], "answer": 1}, {"num": 55, "q": "Bandwidth in networking refers to:", "options": ["The physical size of a cable", "The maximum amount of data transmitted over a network in a given time", "The number of computers on a network", "The color of network cables"], "answer": 1}, {"num": 56, "q": "Which of these represents the fastest internet connection type?", "options": ["Dial-up", "DSL", "Cable broadband", "Fiber optic"], "answer": 3}, {"num": 57, "q": "Dial-up internet connection uses:", "options": ["Satellite signals", "Traditional telephone lines", "Cable TV infrastructure", "Fiber optic cables"], "answer": 1}, {"num": 58, "q": "The TCP/IP model is used to:", "options": ["Design computer hardware", "Standardize communication across networks", "Build websites", "Create operating systems"], "answer": 1}, {"num": 59, "q": "HTTP stands for:", "options": ["HyperText Transfer Protocol", "High Transfer Text Program", "Hyperlink Transmission Transfer Protocol", "Host Transfer Text Procedure"], "answer": 0}, {"num": 60, "q": "HTTPS differs from HTTP in that it:", "options": ["Loads pages faster", "Encrypts data for secure communication", "Uses a different port number only", "Is used only for email"], "answer": 1}, {"num": 61, "q": "A network topology describes:", "options": ["The speed of a network", "The physical or logical arrangement of nodes in a network", "The number of users on a network", "The age of network hardware"], "answer": 1}, {"num": 62, "q": "Which network topology connects all nodes in a circular chain?", "options": ["Star", "Bus", "Ring", "Mesh"], "answer": 2}, {"num": 63, "q": "In a star network topology, all devices connect to:", "options": ["Each other directly", "A central hub or switch", "A ring cable", "A bus backbone"], "answer": 1}, {"num": 64, "q": "FTP stands for:", "options": ["File Transfer Protocol", "Fast Transmission Program", "Formatted Text Protocol", "Firewall Transfer Process"], "answer": 0}, {"num": 65, "q": "DNS stands for:", "options": ["Domain Name System", "Data Network Security", "Dynamic Node System", "Digital Name Syntax"], "answer": 0}, {"num": 66, "q": "The primary function of DNS is to:", "options": ["Block spam emails", "Translate domain names into IP addresses", "Encrypt internet traffic", "Manage file downloads"], "answer": 1}, {"num": 67, "q": "A firewall is used to:", "options": ["Speed up internet connection", "Control incoming and outgoing network traffic based on rules", "Store network data", "Design network topologies"], "answer": 1}, {"num": 68, "q": "VPN stands for:", "options": ["Virtual Private Network", "Very Public Node", "Variable Protocol Network", "Verified Personal Network"], "answer": 0}, {"num": 69, "q": "Which of the following is NOT an internet connectivity method?", "options": ["DSL", "Cable", "Satellite", "LAN cable only (without ISP)"], "answer": 3}, {"num": 70, "q": "The OSI model has how many layers?", "options": ["4", "5", "7", "9"], "answer": 2}, {"num": 71, "q": "Which layer of the OSI model handles physical transmission of data?", "options": ["Network layer", "Transport layer", "Physical layer", "Data link layer"], "answer": 2}, {"num": 72, "q": "A hub differs from a switch in that:", "options": ["A hub is faster", "A hub broadcasts data to all devices; a switch directs data to specific devices", "A hub is more expensive", "A hub supports wireless connections"], "answer": 1}, {"num": 73, "q": "Packet switching is a method of:", "options": ["Storing data on disks", "Breaking data into packets for transmission over a network", "Connecting telephone calls", "Encrypting data"], "answer": 1}, {"num": 74, "q": "Which of the following best defines 'broadband'?", "options": ["Any internet connection using cables", "High-capacity data transmission that supports multiple signals", "A type of wireless only", "Low-speed internet access"], "answer": 1}, {"num": 75, "q": "An intranet is:", "options": ["A global public network", "A private network using internet technologies within an organization", "A type of virus", "A wireless internet connection"], "answer": 1}, {"num": 76, "q": "An extranet extends an intranet to:", "options": ["The general public", "Authorized external users such as partners or suppliers", "Government agencies only", "Other continents"], "answer": 1}, {"num": 77, "q": "Which protocol is used for sending email?", "options": ["HTTP", "FTP", "SMTP", "DNS"], "answer": 2}, {"num": 78, "q": "POP3 and IMAP are protocols used for:", "options": ["Sending emails", "Receiving and reading emails", "Web browsing", "File transfer"], "answer": 1}, {"num": 79, "q": "The speed of an internet connection is typically measured in:", "options": ["Megapixels", "Megabytes per second (Mbps) or Gigabits per second (Gbps)", "Megahertz", "Kilowatts"], "answer": 1}, {"num": 80, "q": "Which of the following enables wireless internet over a large geographic area?", "options": ["Wi-Fi router", "4G/5G mobile broadband", "Ethernet cable", "Bluetooth"], "answer": 1}, {"num": 81, "q": "Cloud computing in the context of networking refers to:", "options": ["Weather forecasting using computers", "Delivering computing services over the internet", "Installing software on local computers", "Setting up physical servers in offices"], "answer": 1}, {"num": 82, "q": "Which address uniquely identifies a device on the Internet globally?", "options": ["MAC address", "IP address", "URL", "Domain name"], "answer": 1}, {"num": 83, "q": "Network security is concerned with:", "options": ["Designing computer monitors", "Protecting network infrastructure from unauthorized access and attacks", "Building network cables", "Managing software licenses"], "answer": 1}, {"num": 84, "q": "Which of the following is a peer-to-peer (P2P) network characteristic?", "options": ["All devices depend on a central server", "Devices share resources directly without a central server", "Only one device can share files at a time", "It requires a paid ISP subscription"], "answer": 1}, {"num": 85, "q": "The Internet of Things (IoT) refers to:", "options": ["Only smartphones connected to the internet", "Physical devices embedded with sensors and connected to the internet", "A new search engine", "A government internet policy"], "answer": 1}, {"num": 86, "q": "Which device assigns IP addresses to computers on a network automatically?", "options": ["Switch", "DHCP server", "Modem", "Repeater"], "answer": 1}, {"num": 87, "q": "Latency in a network refers to:", "options": ["The number of connected devices", "The delay in data transmission across a network", "The physical length of cables", "The cost of internet service"], "answer": 1}, {"num": 88, "q": "Which of the following is true of a server?", "options": ["It only receives data, never sends", "It provides resources or services to other computers (clients) on a network", "It is always a portable device", "It cannot connect to the Internet"], "answer": 1}, {"num": 89, "q": "Internet connectivity in Nigeria has primarily expanded through:", "options": ["Dial-up technology", "Mobile (GSM) broadband and fiber optic expansion", "Satellite only", "Fixed landline DSL"], "answer": 1}, {"num": 90, "q": "Which of the following best describes Internet Service Providers (ISPs) in Nigeria?", "options": ["They are all government owned", "They provide internet access to individuals and organizations for a fee", "They produce computer hardware", "They exclusively foreign companies"], "answer": 1}, {"num": 91, "q": "A web browser is:", "options": ["A tool for building websites", "Software used to access and navigate the World Wide Web", "A type of search engine", "An internet service provider"], "answer": 1}, {"num": 92, "q": "Which of the following is a popular web browser?", "options": ["Microsoft Word", "Google Chrome", "Adobe Photoshop", "WinRAR"], "answer": 1}, {"num": 93, "q": "The 'back' button in a browser allows you to:", "options": ["Load a new webpage", "Return to the previously visited page", "Print the current page", "Open a new tab"], "answer": 1}, {"num": 94, "q": "Bookmarks (or favorites) in a browser are used to:", "options": ["Save images from websites", "Save and quickly access frequently visited URLs", "Block unwanted websites", "Download files"], "answer": 1}, {"num": 95, "q": "Browser cookies are:", "options": ["Harmful viruses stored in the browser", "Small text files stored by websites to remember user information", "Search history files", "Temporary internet files that slow browsing"], "answer": 1}, {"num": 96, "q": "What does the 'refresh' or 'reload' button do in a browser?", "options": ["Opens a new tab", "Reloads the current page", "Goes to the homepage", "Clears browsing history"], "answer": 1}, {"num": 97, "q": "An address bar in a browser is used to:", "options": ["Display search results", "Enter and display the URL of a webpage", "Show the user's physical address", "Manage browser settings"], "answer": 1}, {"num": 98, "q": "Tabbed browsing allows users to:", "options": ["Open only one website at a time", "Open multiple websites simultaneously in separate tabs", "Browse faster without internet", "Download multiple files in parallel"], "answer": 1}, {"num": 99, "q": "Which of the following is NOT a web browser?", "options": ["Mozilla Firefox", "Microsoft Edge", "Opera", "Apache"], "answer": 3}, {"num": 100, "q": "A search engine index is:", "options": ["A library catalogue", "A database of web pages compiled by web crawlers for search retrieval", "A list of ISPs", "A glossary of internet terms"], "answer": 1}, {"num": 101, "q": "Google's search algorithm is designed to:", "options": ["List websites alphabetically", "Rank web pages by relevance and authority", "Only show Nigerian websites", "Display only paid advertisements"], "answer": 1}, {"num": 102, "q": "PageRank, developed by Google, determines:", "options": ["The page loading speed of a website", "A website's importance based on the number and quality of links pointing to it", "The physical server location", "The date a website was created"], "answer": 1}, {"num": 103, "q": "Which search operator narrows results to a specific website?", "options": ["inurl:", "site:", "filetype:", "link:"], "answer": 1}, {"num": 104, "q": "The operator 'filetype:pdf' in a search query:", "options": ["Converts search results to PDF", "Limits results to PDF documents only", "Opens a PDF reader", "Searches within PDF files on your computer"], "answer": 1}, {"num": 105, "q": "A subject gateway is:", "options": ["A restricted government website", "A curated collection of internet resources on a specific subject", "A type of search engine", "An email server"], "answer": 1}, {"num": 106, "q": "Advanced search features in search engines help users to:", "options": ["Access the dark web", "Narrow or refine search results by various criteria", "Speed up internet connections", "Hide browsing history"], "answer": 1}, {"num": 107, "q": "Which of the following is a metasearch engine?", "options": ["Google", "Dogpile", "Bing", "DuckDuckGo"], "answer": 1}, {"num": 108, "q": "Natural language searching allows users to:", "options": ["Search in computer programming languages", "Type questions in everyday language into search engines", "Search only audio content", "Find results only in their native language"], "answer": 1}, {"num": 109, "q": "Which of the following best describes a directory-based search tool?", "options": ["Searches using AI algorithms", "Organizes websites into hierarchical categories for browsing", "Only indexes academic content", "Provides real-time search results"], "answer": 1}, {"num": 110, "q": "The Boolean operator OR in a search:", "options": ["Narrows the search", "Broadens the search by including either term", "Excludes the second term", "Requires both terms to appear"], "answer": 1}, {"num": 111, "q": "The Boolean operator AND in a search:", "options": ["Broadens the search", "Narrows the search by requiring both terms to appear", "Excludes one of the terms", "Works the same as OR"], "answer": 1}, {"num": 112, "q": "The Boolean operator NOT in a search:", "options": ["Requires both terms", "Excludes results containing the specified term", "Broadens results", "Searches for acronyms"], "answer": 1}, {"num": 113, "q": "Proximity operators in database searching help find:", "options": ["Websites within a geographic proximity", "Words that appear near each other in a document", "Files with similar sizes", "Images close to each other on a page"], "answer": 1}, {"num": 114, "q": "Federated searching refers to:", "options": ["Searching only federal government websites", "Simultaneous searching of multiple databases from one interface", "Searching across different countries' internet zones", "A restricted military search system"], "answer": 1}, {"num": 115, "q": "An RSS feed allows users to:", "options": ["Block spam emails", "Subscribe to and receive updated content from websites automatically", "Search the deep web", "Download large video files"], "answer": 1}, {"num": 116, "q": "A podcast in the context of internet navigation is:", "options": ["A live TV broadcast", "A digital audio or video file series available for streaming or download", "A type of browser plugin", "An online video game platform"], "answer": 1}, {"num": 117, "q": "Incognito or private browsing mode primarily:", "options": ["Makes you anonymous to websites you visit", "Prevents your browser from saving your history, cookies, and form data locally", "Encrypts all your internet traffic", "Allows access to blocked websites"], "answer": 1}, {"num": 118, "q": "Which of the following is true about Wikipedia as an internet resource?", "options": ["All its articles are peer-reviewed", "It is a user-contributed encyclopedia useful as a starting point", "It is the most authoritative academic source", "It never changes once published"], "answer": 1}, {"num": 119, "q": "Social bookmarking sites allow users to:", "options": ["Share physical books online", "Save, organize, and share web links publicly", "Print web pages remotely", "Build websites collaboratively"], "answer": 1}, {"num": 120, "q": "Image search engines allow users to:", "options": ["Search only text documents", "Find images online using keywords or even an image as input", "Edit photos online", "Create graphics for websites"], "answer": 1}, {"num": 121, "q": "A browser's cache stores:", "options": ["Your email messages", "Temporary copies of web pages to speed up future visits", "Your downloaded files permanently", "Your bookmarks"], "answer": 1}, {"num": 122, "q": "An example of an academic database used for journal searching is:", "options": ["YouTube", "JSTOR", "Instagram", "Amazon"], "answer": 1}, {"num": 123, "q": "Navigation on the Web refers to:", "options": ["Physical movement between computer labs", "Moving between web pages and websites using hyperlinks and browsers", "Configuring a network router", "Writing URLs for websites"], "answer": 1}, {"num": 124, "q": "Which of the following can librarians recommend for finding grey literature online?", "options": ["Google Images", "OpenDOAR or OpenGrey databases", "Social media platforms", "Online gaming sites"], "answer": 1}, {"num": 125, "q": "The process of narrowing a topic before searching the internet is called:", "options": ["Indexing", "Query formulation or search strategy development", "Web crawling", "Caching"], "answer": 1}, {"num": 126, "q": "Which of the following is an open-access repository for academic papers?", "options": ["Netflix", "arXiv.org", "Spotify", "LinkedIn"], "answer": 1}, {"num": 127, "q": "The library's role in internet navigation includes:", "options": ["Providing only physical books", "Guiding users to reliable online resources and teaching search skills", "Building search engines", "Restricting internet use"], "answer": 1}, {"num": 128, "q": "Which tool helps users save and manage research citations found online?", "options": ["Microsoft Paint", "Zotero or Mendeley", "VLC Media Player", "Adobe Acrobat"], "answer": 1}, {"num": 129, "q": "A 'hit' in internet searching terminology refers to:", "options": ["A failed search", "A result returned by a search engine matching the query", "A website attack", "A paid advertisement"], "answer": 1}, {"num": 130, "q": "Search engine optimization (SEO) refers to:", "options": ["Searching for optimized computers", "Techniques to improve a website's visibility in search engine results", "Organizing a library catalogue", "Filtering harmful content online"], "answer": 1}, {"num": 131, "q": "Voice search is an emerging internet navigation method that:", "options": ["Only works on desktop computers", "Allows users to search the internet using spoken language", "Requires special hardware only found in labs", "Cannot be used for academic research"], "answer": 1}, {"num": 132, "q": "Which of the following is NOT a function of a web browser?", "options": ["Displaying web pages", "Managing internet connections at the ISP level", "Storing bookmarks", "Supporting browser extensions"], "answer": 1}, {"num": 133, "q": "A plug-in or browser extension is:", "options": ["A physical hardware add-on", "Software that adds extra features to a web browser", "A type of search engine", "A network security device"], "answer": 1}, {"num": 134, "q": "Hypertext is:", "options": ["A very large text document", "Text that contains links to other texts or resources", "Encrypted text on the web", "A type of HTML code error"], "answer": 1}, {"num": 135, "q": "The purpose of a sitemap on a website is to:", "options": ["Display the physical location of the server", "Provide a structured overview of a website's pages to aid navigation", "Show internet network diagrams", "Map the user's physical location"], "answer": 1}, {"num": 136, "q": "Which of the following is a primary use of the Internet for education?", "options": ["Playing video games", "E-learning and access to online educational resources", "Gambling", "Shopping only"], "answer": 1}, {"num": 137, "q": "E-commerce refers to:", "options": ["Electronic communication only", "Buying and selling of goods and services over the internet", "Computer programming", "Email marketing only"], "answer": 1}, {"num": 138, "q": "Social networking sites are used for:", "options": ["Programming computers", "Connecting with people, sharing information, and building communities online", "Sending physical letters", "Creating databases"], "answer": 1}, {"num": 139, "q": "Which of the following is an example of a social networking platform?", "options": ["Microsoft Excel", "Facebook", "Adobe Illustrator", "WinZip"], "answer": 1}, {"num": 140, "q": "Telemedicine is an application of the Internet in:", "options": ["Agriculture", "Healthcare delivery at a distance", "Military operations", "Retail only"], "answer": 1}, {"num": 141, "q": "Internet banking allows customers to:", "options": ["Print physical currency", "Conduct financial transactions online", "Open a bank branch", "Manufacture ATM cards"], "answer": 1}, {"num": 142, "q": "Online journalism refers to:", "options": ["Printing newspapers at home", "Publishing and distributing news content via the internet", "Broadcasting only on television", "Writing handwritten reports"], "answer": 1}, {"num": 143, "q": "Which of the following represents a use of the Internet in government?", "options": ["Building physical roads", "E-government services allowing citizens to access public services online", "Manufacturing paper currency", "Planting crops"], "answer": 1}, {"num": 144, "q": "Digital libraries on the Internet provide:", "options": ["Physical lending of books only", "Online access to digitized collections of books, journals, and multimedia", "Printing services only", "Physical library spaces"], "answer": 1}, {"num": 145, "q": "Which of the following is an example of Internet use in entertainment?", "options": ["Operating physical machinery", "Streaming movies, music, and games online", "Filing paper tax returns", "Building physical infrastructure"], "answer": 1}, {"num": 146, "q": "The Internet enables distance learning by:", "options": ["Requiring all students to be physically present", "Allowing learners to access courses and instructors remotely", "Printing textbooks electronically", "Restricting education to certain regions"], "answer": 1}, {"num": 147, "q": "Which of the following is a use of the Internet in research?", "options": ["Physical laboratory experiments only", "Accessing online databases, journals, and collaborative research tools", "Filing physical patent applications", "Mailing research questionnaires"], "answer": 1}, {"num": 148, "q": "Internet use in agriculture includes:", "options": ["Manual plowing", "Accessing weather forecasts, market prices, and farming best practices online", "Building irrigation canals", "Producing fertilizer physically"], "answer": 1}, {"num": 149, "q": "Online advertising differs from traditional advertising in that it:", "options": ["Costs more in all cases", "Allows targeted, measurable, and interactive marketing to global audiences", "Reaches fewer people", "Cannot include visuals"], "answer": 1}, {"num": 150, "q": "A blog is best described as:", "options": ["A type of database", "An informally written website or online journal updated regularly", "A search engine", "An email client"], "answer": 1}, {"num": 151, "q": "Video conferencing via the internet allows:", "options": ["Only voice calls without video", "Real-time face-to-face meetings between remote participants", "One-way broadcasting only", "File transfer without communication"], "answer": 1}, {"num": 152, "q": "Cloud storage services use the Internet to:", "options": ["Physically store files in the user's device", "Store files on remote servers accessible from any internet-connected device", "Create physical storage devices", "Restrict file sharing"], "answer": 1}, {"num": 153, "q": "Internet use has impacted publishing by:", "options": ["Reducing access to books", "Enabling digital publishing, open access, and self-publishing", "Increasing cost of publishing only", "Eliminating all print publishing"], "answer": 1}, {"num": 154, "q": "The use of social media for political campaigns is an example of the Internet's role in:", "options": ["Entertainment only", "Political communication and civic engagement", "Sports management", "Agricultural planning"], "answer": 1}, {"num": 155, "q": "Which of the following best describes 'e-learning'?", "options": ["Learning only in electronic engineering", "Education delivered using electronic technologies via the internet", "Using computers without internet", "Learning how to repair electronics"], "answer": 1}, {"num": 156, "q": "Internet use in libraries includes:", "options": ["Only cataloguing physical books", "Accessing electronic resources, supporting OPAC, and providing reference services online", "Eliminating the need for librarians", "Only printing services"], "answer": 1}, {"num": 157, "q": "Open educational resources (OERs) on the internet are:", "options": ["Paid educational materials only", "Freely accessible teaching and learning materials online", "Government classified documents", "Materials only for universities"], "answer": 1}, {"num": 158, "q": "Cybercrime is a negative use of the Internet that involves:", "options": ["Designing websites", "Criminal activities conducted via the internet such as hacking and fraud", "Online education", "Legal e-commerce"], "answer": 1}, {"num": 159, "q": "Online collaboration tools allow teams to:", "options": ["Work only in the same physical office", "Work together in real time across different locations via the internet", "Communicate only by post", "Avoid the need for the internet"], "answer": 1}, {"num": 160, "q": "Which of the following is NOT an academic use of the internet?", "options": ["Searching journal databases", "Accessing online lectures", "Conducting cyberbullying", "Participating in academic forums"], "answer": 2}, {"num": 161, "q": "Job searching on the Internet includes using platforms such as:", "options": ["Recipe websites", "LinkedIn, Indeed, and company career portals", "Gaming platforms", "Shopping websites"], "answer": 1}, {"num": 162, "q": "E-health involves:", "options": ["Electronic repairs only", "Using digital tools and the internet to support and deliver healthcare services", "Physical hospital construction", "Medical equipment manufacturing"], "answer": 1}, {"num": 163, "q": "Internet use has transformed journalism by enabling:", "options": ["Slower news delivery", "Real-time reporting, citizen journalism, and multimedia storytelling", "Only print publications", "Government-only news sources"], "answer": 1}, {"num": 164, "q": "Which of the following is an ethical issue associated with Internet use?", "options": ["Fast internet speed", "Privacy violations and data theft", "Efficient information access", "Global communication"], "answer": 1}, {"num": 165, "q": "Online encyclopedias and databases are useful for students primarily because:", "options": ["They replace the need for all lecturers", "They provide quick access to organized, broad, and often peer-reviewed information", "They are always free with no restrictions", "They are only available in English"], "answer": 1}, {"num": 166, "q": "Internet use in Nigeria's banking sector includes:", "options": ["Manual ledger updates only", "Mobile banking apps, online transfers, and digital payment platforms", "Physical cash distribution only", "Printing ATM cards manually"], "answer": 1}, {"num": 167, "q": "A major benefit of using the internet for communication is:", "options": ["Increased postal costs", "Faster, cheaper, and global real-time communication", "Limited reach to local audiences only", "Physical delivery of messages"], "answer": 1}, {"num": 168, "q": "Which of the following best describes 'virtual learning environments'?", "options": ["Physical classrooms with computers", "Online platforms that support teaching, learning, and course management", "Traditional library spaces", "Hardware used in schools"], "answer": 1}, {"num": 169, "q": "The use of the Internet for scholarly communication includes:", "options": ["Paper submissions only", "Electronic submission of articles, open access publishing, and online peer review", "Oral presentations only", "Physical book distribution"], "answer": 1}, {"num": 170, "q": "Fake news on the Internet refers to:", "options": ["Accurate but old news", "False or misleading information presented as genuine news", "Foreign language news only", "News behind paywalls"], "answer": 1}, {"num": 171, "q": "Internet use in the legal profession includes:", "options": ["Writing laws by hand", "Legal research using online law databases and filing documents electronically", "Physical court appearances only", "Printing legal documents manually"], "answer": 1}, {"num": 172, "q": "Which of the following applications demonstrates internet use in environmental management?", "options": ["Mining without permits", "Real-time satellite data sharing for environmental monitoring and conservation", "Physical tree planting only", "Burning fossil fuels"], "answer": 1}, {"num": 173, "q": "The digital divide refers to:", "options": ["The difference between two types of computers", "The gap between those who have access to digital technology and the internet and those who do not", "Dividing the internet into zones", "Differences in internet speeds only"], "answer": 1}, {"num": 174, "q": "What is crowdsourcing on the internet?", "options": ["Gathering clouds of data without users", "Obtaining information, ideas, or services from a large group of internet users", "A type of internet virus", "A server maintenance task"], "answer": 1}, {"num": 175, "q": "Smart classrooms use the Internet primarily to:", "options": ["Replace all teachers", "Enhance teaching and learning with digital and connected tools", "Eliminate textbooks permanently", "Limit student participation"], "answer": 1}, {"num": 176, "q": "MOOC stands for:", "options": ["Managed Online Offline Course", "Massive Open Online Course", "Multiple Online Offline Collaboration", "Modern Online Open Content"], "answer": 1}, {"num": 177, "q": "Which of the following is an example of e-government service in Nigeria?", "options": ["Physical filing at ministry offices only", "The National Identity Management Commission (NIMC) online portal", "Manual vehicle registration", "Physical tax payment queues"], "answer": 1}, {"num": 178, "q": "Internet use in sports includes:", "options": ["Manual scorekeeping only", "Live streaming, performance data analytics, and fan engagement online", "Physical fitness equipment manufacturing", "Building sports stadiums"], "answer": 1}, {"num": 179, "q": "Which of the following is a risk of internet use for young people?", "options": ["Improved academic performance", "Exposure to cyberbullying, inappropriate content, and online predators", "Better global awareness", "Access to more books"], "answer": 1}, {"num": 180, "q": "Netiquette refers to:", "options": ["Network equipment maintenance", "Etiquette and code of conduct for behavior on the internet", "Internet network configuration", "A type of internet security software"], "answer": 1}, {"num": 181, "q": "Email stands for:", "options": ["Electronic Mail", "Extended Mail", "Encoded Messaging", "Enhanced Mailing"], "answer": 0}, {"num": 182, "q": "An email address typically consists of:", "options": ["Only a name", "A username, @ symbol, and domain name", "Only a domain name", "A phone number and a name"], "answer": 1}, {"num": 183, "q": "Which protocol is used to send emails?", "options": ["FTP", "SMTP", "HTTP", "POP3"], "answer": 1}, {"num": 184, "q": "Which protocol is used to retrieve emails from a server while keeping copies on the server?", "options": ["SMTP", "FTP", "IMAP", "DNS"], "answer": 2}, {"num": 185, "q": "POP3 differs from IMAP in that POP3:", "options": ["Keeps messages on the server", "Downloads emails to the local device and typically removes them from the server", "Is used for sending emails", "Only works with webmail"], "answer": 1}, {"num": 186, "q": "The 'CC' field in an email refers to:", "options": ["Carbon Copy – sending a copy to additional recipients visibly", "Classified Content", "Central Communication", "Computer Code"], "answer": 0}, {"num": 187, "q": "The 'BCC' field in an email means:", "options": ["Big Carbon Copy", "Blind Carbon Copy – recipients in this field are hidden from others", "Backup Communication Channel", "Basic Content Copy"], "answer": 1}, {"num": 188, "q": "Which part of an email summarizes its content for the recipient?", "options": ["Attachment", "Subject line", "Signature", "CC field"], "answer": 1}, {"num": 189, "q": "An email attachment is:", "options": ["A link to a website", "A file sent along with an email message", "The email signature", "An email address"], "answer": 1}, {"num": 190, "q": "Webmail refers to:", "options": ["Emails sent only through web design companies", "Email access via a web browser without installing dedicated software", "Physical mail delivered by web companies", "A type of email virus"], "answer": 1}, {"num": 191, "q": "Which of the following is a popular webmail service?", "options": ["Microsoft Word", "Gmail", "Adobe Reader", "VLC Player"], "answer": 1}, {"num": 192, "q": "Spam email refers to:", "options": ["Important confidential emails", "Unsolicited bulk email often used for advertising or phishing", "Emails with large attachments", "Encrypted emails"], "answer": 1}, {"num": 193, "q": "Email filtering is used to:", "options": ["Speed up email sending", "Automatically sort, block, or redirect emails based on set rules", "Add formatting to email text", "Create email accounts"], "answer": 1}, {"num": 194, "q": "An email signature is:", "options": ["A digital handwritten signature scanned into email", "A block of text automatically appended to emails with sender details", "The password to an email account", "An email subject line"], "answer": 1}, {"num": 195, "q": "A mailing list is:", "options": ["A physical postal address list", "A list of email addresses that receive the same messages", "A list of spam emails", "A database of domain names"], "answer": 1}, {"num": 196, "q": "An autoresponder in email systems is used to:", "options": ["Block incoming emails", "Automatically send a pre-set reply when an email is received", "Forward emails to another address", "Delete old emails automatically"], "answer": 1}, {"num": 197, "q": "Email etiquette includes all of the following EXCEPT:", "options": ["Using a clear subject line", "Proofreading before sending", "Writing in ALL CAPS for emphasis in every email", "Being concise and professional"], "answer": 2}, {"num": 198, "q": "Which of the following is a risk associated with email use?", "options": ["Fast message delivery", "Phishing attacks through deceptive emails", "Easy file sharing", "Global reach"], "answer": 1}, {"num": 199, "q": "Email threads refer to:", "options": ["Emails sent between government agencies", "A series of replies and forwards connected to an original email", "Separate email accounts for each project", "Attachments linked together"], "answer": 1}, {"num": 200, "q": "An email client is:", "options": ["A person who uses email", "Software used to send, receive, and manage emails (e.g., Microsoft Outlook)", "An email service provider", "The company hosting the email server"], "answer": 1}, {"num": 201, "q": "Which of the following is NOT a feature of a typical email client?", "options": ["Inbox management", "Calendar integration", "Video editing", "Contact list management"], "answer": 2}, {"num": 202, "q": "Email is advantageous in academic communication because:", "options": ["It replaces all verbal communication", "It provides a written record, fast delivery, and global reach at low cost", "It is always encrypted", "It can only be used by universities"], "answer": 1}, {"num": 203, "q": "The 'inbox' in an email account holds:", "options": ["Sent messages", "Received emails", "Deleted messages", "Spam messages"], "answer": 1}, {"num": 204, "q": "What does 'forwarding' an email mean?", "options": ["Deleting the email permanently", "Sending a received email to another recipient", "Replying to all recipients", "Moving the email to a folder"], "answer": 1}, {"num": 205, "q": "Email encryption is used to:", "options": ["Make emails load faster", "Protect the content of emails from unauthorized access", "Add images to emails", "Organize emails by date"], "answer": 1}, {"num": 206, "q": "A distribution list in emailing allows:", "options": ["Sending an email to a single person", "Sending one email to a predefined group of recipients simultaneously", "Automatically blocking spam", "Scheduling emails for future delivery"], "answer": 1}, {"num": 207, "q": "The '@' symbol in an email address separates:", "options": ["First name and last name", "Username and domain name", "Domain name and country code", "Email client and server"], "answer": 1}, {"num": 208, "q": "Which of the following is a legitimate reason an email may bounce?", "options": ["Using the CC field", "Invalid email address or a full mailbox", "Having attachments", "Using an email signature"], "answer": 1}, {"num": 209, "q": "Email scheduling allows users to:", "options": ["Receive emails at set times only", "Write and schedule emails to be sent at a future time", "Block emails from specific senders", "Download email history"], "answer": 1}, {"num": 210, "q": "An email folder labeled 'Drafts' contains:", "options": ["Permanently deleted emails", "Emails that have been written but not yet sent", "Archived sent messages", "Spam emails"], "answer": 1}, {"num": 211, "q": "Which of the following describes email archiving?", "options": ["Permanently deleting old emails", "Storing emails long-term for retrieval, compliance, or record keeping", "Moving emails to the spam folder", "Forwarding emails to multiple recipients"], "answer": 1}, {"num": 212, "q": "A professional email to a lecturer should include:", "options": ["Informal greetings and slang", "A clear subject, respectful greeting, concise body, and proper closing", "Emoji and animated GIFs", "All capitals for headings"], "answer": 1}, {"num": 213, "q": "The role of email in a university library includes:", "options": ["Replacing physical books", "Sending overdue notices, reference queries, and inter-library loan requests", "Building the library website", "Creating library databases"], "answer": 1}, {"num": 214, "q": "Which of the following is an example of email abuse?", "options": ["Using a professional subject line", "Sending unsolicited bulk marketing emails (spamming)", "Archiving important emails", "Setting up email autoresponders"], "answer": 1}, {"num": 215, "q": "Multi-factor authentication (MFA) for email accounts provides:", "options": ["Faster email sending", "Additional security beyond just a password", "More storage space", "Automatic spam deletion"], "answer": 1}, {"num": 216, "q": "What is a 'reply all' email function?", "options": ["Replying only to the original sender", "Sending your reply to all recipients of the original email", "Forwarding the email to a new contact", "Archiving an email and replying later"], "answer": 1}, {"num": 217, "q": "Email is considered asynchronous communication because:", "options": ["It allows instant face-to-face interaction", "Sender and receiver do not need to be online at the same time", "It requires a live phone connection", "Messages are deleted immediately after reading"], "answer": 1}, {"num": 218, "q": "Which of the following best prevents phishing via email?", "options": ["Reading all emails immediately", "Verifying sender addresses and not clicking unknown links", "Using webmail instead of email clients", "Sending emails in plain text only"], "answer": 1}, {"num": 219, "q": "Email use in library reference services allows librarians to:", "options": ["Only respond in person", "Answer user queries remotely and attach relevant documents", "Stop face-to-face reference sessions", "Build physical library collections"], "answer": 1}, {"num": 220, "q": "Which of the following file types is commonly NOT recommended as an email attachment due to security risks?", "options": ["PDF documents", ".exe executable files", "JPEG image files", "Word documents"], "answer": 1}, {"num": 221, "q": "Listserv is an example of:", "options": ["A web browser", "An automated email mailing list management system", "A search engine", "An email encryption tool"], "answer": 1}, {"num": 222, "q": "An email newsletter is used to:", "options": ["Send private one-to-one messages", "Distribute news and updates to a list of subscribers regularly", "Archive personal emails", "Block spam messages"], "answer": 1}, {"num": 223, "q": "Which of the following is a sign of a phishing email?", "options": ["A professional-looking subject line", "Urgent requests for personal information with suspicious links", "An email from a known colleague", "An email from a verified institution"], "answer": 1}, {"num": 224, "q": "Email has largely replaced which traditional communication method in academic institutions?", "options": ["Telephone calls", "Internal memos and physical letters for routine communication", "Face-to-face meetings entirely", "Library borrowing"], "answer": 1}, {"num": 225, "q": "Which of the following best describes 'read receipts' in email?", "options": ["Automatic replies to emails", "Notifications sent to the sender confirming the recipient has opened the email", "Receipts for email storage billing", "Email content previews"], "answer": 1}, {"num": 226, "q": "The information searching process begins with:", "options": ["Selecting a database", "Identifying and defining the information need", "Typing keywords into a search engine", "Evaluating results"], "answer": 1}, {"num": 227, "q": "A search strategy is:", "options": ["A plan for browsing social media", "A systematic plan for searching information, including choice of tools and terms", "A library catalogue layout", "The arrangement of books on a shelf"], "answer": 1}, {"num": 228, "q": "Which of the following best describes an information need?", "options": ["The number of books in a library", "A gap in knowledge that motivates an individual to seek information", "A list of websites to visit", "A reading assignment"], "answer": 1}, {"num": 229, "q": "Conceptual analysis in information searching involves:", "options": ["Writing a research paper", "Breaking down a research topic into its key concepts for effective searching", "Formatting citations", "Building a library database"], "answer": 1}, {"num": 230, "q": "Subject headings in library databases are used to:", "options": ["Sort books by size", "Standardize the terms used to describe topics in records for consistent retrieval", "Rank search results by popularity", "Restrict access to certain documents"], "answer": 1}, {"num": 231, "q": "Which of the following is the correct order of the information-searching process?", "options": ["Search → Evaluate → Define need → Select tools", "Define need → Formulate strategy → Search → Evaluate → Use", "Select tools → Search → Define need → Evaluate", "Evaluate → Search → Use → Define need"], "answer": 1}, {"num": 232, "q": "Synonyms are used in searching to:", "options": ["Narrow results to a single word", "Expand retrieval by searching for alternative terms for the same concept", "Filter results by date", "Search only exact titles"], "answer": 1}, {"num": 233, "q": "The concept of 'recall' in information retrieval refers to:", "options": ["The ability to delete irrelevant documents", "The proportion of relevant documents retrieved from the total relevant documents in the database", "The speed of searching", "The accuracy of a single result"], "answer": 1}, {"num": 234, "q": "The concept of 'precision' in information retrieval refers to:", "options": ["The total number of results returned", "The proportion of retrieved documents that are actually relevant", "The time taken to retrieve information", "The number of databases searched"], "answer": 1}, {"num": 235, "q": "There is typically a trade-off between recall and precision in that:", "options": ["Both always increase together", "Higher recall often means lower precision and vice versa", "Both are always equal", "They are not related"], "answer": 1}, {"num": 236, "q": "A controlled vocabulary in database searching:", "options": ["Controls who can access the database", "Uses standardized terms to index and search for information consistently", "Limits search to one language", "Restricts searches to paid users"], "answer": 1}, {"num": 237, "q": "Free-text searching means:", "options": ["Searching without paying a fee", "Searching using any natural language terms in the text of documents", "Searching only for free resources", "Using pre-set categories to search"], "answer": 1}, {"num": 238, "q": "Thesaurus in information searching is used to:", "options": ["Look up grammar rules", "Find synonyms, related terms, broader and narrower terms for search vocabulary", "Translate queries to other languages", "Check the spelling of search terms"], "answer": 1}, {"num": 239, "q": "Which of the following best describes 'relevance' in information retrieval?", "options": ["The cost of retrieved information", "The degree to which retrieved information satisfies the user's information need", "The file size of retrieved documents", "The date of publication of retrieved documents"], "answer": 1}, {"num": 240, "q": "Post-coordinate indexing involves:", "options": ["Indexing terms assigned before searching", "Combining index terms at the time of searching to create specific queries", "Printing index cards manually", "Cataloguing books alphabetically"], "answer": 1}, {"num": 241, "q": "Pre-coordinate indexing involves:", "options": ["Combining terms at the time of searching", "Creating compound subject headings before the search to describe documents", "Post-search filtering", "Using general terms only"], "answer": 1}, {"num": 242, "q": "A citation search uses:", "options": ["Author names to find all works by that author", "References within one document to find other related papers citing or cited by it", "Keywords only", "Subject headings only"], "answer": 1}, {"num": 243, "q": "An information audit is used to:", "options": ["Check spelling in documents", "Assess an organization's information resources, needs, and flows", "Audit financial transactions", "Evaluate computer hardware"], "answer": 1}, {"num": 244, "q": "A reference interview in librarianship helps to:", "options": ["Loan books to users", "Clarify the user's actual information need and develop an effective search strategy", "Conduct bibliometric research", "Manage library subscriptions"], "answer": 1}, {"num": 245, "q": "Which of the following is an example of a secondary source?", "options": ["Original research data", "A review article summarizing multiple research studies", "A government report with raw statistics", "An oral interview transcript"], "answer": 1}, {"num": 246, "q": "Bibliographic databases are used to:", "options": ["Store physical books", "Search for references and abstracts of published literature", "Build websites", "Manage email accounts"], "answer": 1}, {"num": 247, "q": "Full-text databases provide:", "options": ["Only abstracts of articles", "Complete text of articles, books, and other documents", "Only bibliographic references", "Database administration tools"], "answer": 1}, {"num": 248, "q": "An abstract in a research article serves as:", "options": ["The full text of the article", "A brief summary of the research content and findings", "The conclusion only", "A list of references"], "answer": 1}, {"num": 249, "q": "Evaluating information involves assessing:", "options": ["Only the publication year", "Currency, relevance, authority, accuracy, and purpose of the source", "Page count only", "The font size of the document"], "answer": 1}, {"num": 250, "q": "Grey literature refers to:", "options": ["Old published books", "Documents not published through conventional commercial channels such as reports, theses, and working papers", "Books with grey covers", "Classified government documents"], "answer": 1}, {"num": 251, "q": "A literature review in research is used to:", "options": ["List all books in a library", "Systematically identify, evaluate, and synthesize existing research on a topic", "Create a bibliography for a novel", "Manage a library catalogue"], "answer": 1}, {"num": 252, "q": "The principal of least effort in information seeking suggests that:", "options": ["Users always seek the most accurate sources", "People tend to use the most accessible sources even if not the best", "Users always consult a librarian first", "People avoid using the internet"], "answer": 1}, {"num": 253, "q": "Wilson's model of information behavior describes:", "options": ["How computers process data", "The contexts, needs, and behaviors that drive people to seek information", "Library shelving systems", "Database architecture"], "answer": 1}, {"num": 254, "q": "Which of the following is a quantitative indicator of information quality?", "options": ["Aesthetic design of a website", "Number of citations a paper has received (citation count)", "Length of an article", "Color scheme of a journal"], "answer": 1}, {"num": 255, "q": "Boolean searching was named after:", "options": ["Tim Berners-Lee", "George Boole, a 19th-century mathematician", "Charles Babbage", "Nikola Tesla"], "answer": 1}, {"num": 256, "q": "Proximity searching in databases uses operators such as:", "options": ["AND, OR, NOT", "NEAR, WITHIN, ADJ", "PLUS, MINUS, DIVIDE", "IF, THEN, ELSE"], "answer": 1}, {"num": 257, "q": "The concept of 'noise' in information retrieval refers to:", "options": ["Loud server rooms", "Irrelevant information retrieved alongside relevant results", "Slow internet speeds", "Error messages on databases"], "answer": 1}, {"num": 258, "q": "Hypertext-based searching allows users to:", "options": ["Search only by keyword", "Follow links between related documents to discover connected information", "Use only Boolean operators", "Access only printed materials"], "answer": 1}, {"num": 259, "q": "A peer-reviewed journal is a publication where:", "options": ["Any author can publish freely", "Articles are evaluated by independent experts before publication", "Only professors are editors", "All content is published anonymously"], "answer": 1}, {"num": 260, "q": "Which of the following is an example of plagiarism in information use?", "options": ["Citing a source correctly", "Using another person's work or ideas without acknowledgment", "Paraphrasing with proper citation", "Quoting with quotation marks"], "answer": 1}, {"num": 261, "q": "Information synthesis in research refers to:", "options": ["Organizing physical books", "Combining and integrating information from multiple sources to create new understanding", "Copying text from sources", "Filing documents alphabetically"], "answer": 1}, {"num": 262, "q": "An iterative search process means:", "options": ["Searching only once and accepting results", "Refining and repeating the search based on initial results to improve retrieval", "Using only one database", "Searching without a strategy"], "answer": 1}, {"num": 263, "q": "What is meant by 'information currency'?", "options": ["The monetary value of information", "How current, recent, or up-to-date the information is", "The number of currencies covered by a financial database", "How frequently a website is visited"], "answer": 1}, {"num": 264, "q": "The Dewey Decimal Classification system is primarily used to:", "options": ["Index websites", "Classify and organize library materials by subject", "Rank search engine results", "Number journal pages"], "answer": 1}, {"num": 265, "q": "Which of the following is an example of information synthesis?", "options": ["Photocopying one article", "Writing a report that combines findings from 20 different research studies", "Sending an email", "Cataloguing a book"], "answer": 1}, {"num": 266, "q": "The process of citing sources in a research paper serves to:", "options": ["Make the paper longer", "Give credit to original authors and allow readers to locate the sources", "Confuse the reader", "Replace the need for a bibliography"], "answer": 1}, {"num": 267, "q": "When did Nigeria first connect to the Internet?", "options": ["1985", "1996", "2000", "2005"], "answer": 1}, {"num": 268, "q": "The Nigerian Communications Commission (NCC) is responsible for:", "options": ["Producing computer hardware", "Regulating the telecommunications and internet industry in Nigeria", "Managing Nigerian universities", "Building internet cables"], "answer": 1}, {"num": 269, "q": "Mobile internet access has grown rapidly in Nigeria primarily through:", "options": ["Fixed telephone lines", "The expansion of GSM mobile networks and smartphones", "Satellite-only internet", "Government-run cybercafés"], "answer": 1}, {"num": 270, "q": "The major challenge to internet access in Nigeria is:", "options": ["Excessive internet speed", "Poor infrastructure, high cost, and limited electricity supply", "Too many ISPs competing", "Strict internet censorship laws"], "answer": 1}, {"num": 271, "q": "Cybercafés in Nigeria historically provided:", "options": ["Physical library services", "Public access to internet services especially where home access was limited", "Mobile phone repair services", "TV broadcasting"], "answer": 1}, {"num": 272, "q": "Which Nigerian university is credited as one of the pioneers of Internet adoption in Nigeria's academic sector?", "options": ["University of Lagos only", "Obafemi Awolowo University and University of Ibadan were early adopters", "Federal University of Technology Akure only", "University of Abuja only"], "answer": 1}, {"num": 273, "q": "Internet usage in Nigerian universities primarily supports:", "options": ["Physical sports activities", "Research, e-learning, library access, and academic communication", "Building construction management", "Campus food distribution"], "answer": 1}, {"num": 274, "q": "NITDA stands for:", "options": ["National Information Technology Development Agency", "Nigerian Internet Technology Data Authority", "National Internet Telecommunications Development Association", "Network Infrastructure Technology and Development Authority"], "answer": 0}, {"num": 275, "q": "The National Broadband Plan in Nigeria aims to:", "options": ["Restrict internet use", "Expand broadband internet access and penetration across the country", "Privatize all internet services", "Increase the cost of internet access"], "answer": 1}, {"num": 276, "q": "Social media usage in Nigeria has impacted:", "options": ["Physical postal services positively only", "Political discourse, commerce, entertainment, and public communication significantly", "Academic research negatively only", "Government policies in isolation only"], "answer": 1}, {"num": 277, "q": "Which of the following is a major social media platform widely used in Nigeria?", "options": ["Orkut", "WhatsApp, Facebook, and Twitter/X", "MySpace", "Friendster"], "answer": 1}, {"num": 278, "q": "Internet access in rural Nigeria is primarily limited by:", "options": ["Excess infrastructure", "Inadequate telecommunications infrastructure and high costs", "Too many available ISPs", "Strict religious restrictions"], "answer": 1}, {"num": 279, "q": "Nigeria's internet penetration rate has grown significantly due to:", "options": ["Reduction in population", "Proliferation of affordable smartphones and mobile data plans", "International internet subsidies", "Restriction of social media use"], "answer": 1}, {"num": 280, "q": "E-governance in Nigeria includes:", "options": ["Building physical government offices only", "Government services delivered online such as tax filing, registration, and permits", "Manual tax collection only", "Paper-based government forms only"], "answer": 1}, {"num": 281, "q": "The concept of the 'digital divide' in Nigeria refers to the gap between:", "options": ["Different internet speeds in the same area", "Those with and without access to internet and digital technology, often along urban-rural lines", "Different social media users", "Telecom companies and their subscribers"], "answer": 1}, {"num": 282, "q": "Which of the following is a Nigerian Internet Exchange Point?", "options": ["NITEL", "IXPN (Internet Exchange Point of Nigeria)", "MTN", "Airtel"], "answer": 1}, {"num": 283, "q": "Online trading and e-commerce in Nigeria has been advanced by platforms such as:", "options": ["Physical market stalls only", "Jumia, Konga, and other local e-commerce platforms", "Government-only procurement portals", "International platforms exclusively"], "answer": 1}, {"num": 284, "q": "The '419' internet fraud, associated with Nigeria globally, refers to:", "options": ["A government policy number", "Advance-fee fraud using email and internet communication", "A tax regulation", "An ISP pricing model"], "answer": 1}, {"num": 285, "q": "The Cybercrime (Prohibition, Prevention, etc.) Act in Nigeria was enacted to:", "options": ["Promote cybercrime activities", "Combat cybercrimes and protect Nigerians and organizations from online threats", "Restrict academic internet use", "Tax internet users"], "answer": 1}, {"num": 286, "q": "Internet use in Nigerian libraries has evolved to include:", "options": ["Removing all physical collections", "Electronic resource access, digital library services, and internet-based reference", "Replacing librarians with robots", "Selling books online only"], "answer": 1}, {"num": 287, "q": "NigeriaInfoNet and NUNet are examples of:", "options": ["Social media platforms", "Academic and research network initiatives in Nigeria", "Commercial ISPs", "Internet governance bodies"], "answer": 1}, {"num": 288, "q": "The growth of fintech in Nigeria is largely driven by:", "options": ["Physical banking only", "Mobile internet enabling digital payment solutions like Flutterwave and Paystack", "Paper-based banking systems", "International banks only"], "answer": 1}, {"num": 289, "q": "Data privacy concerns in Nigeria are addressed by:", "options": ["No formal legislation", "The Nigeria Data Protection Regulation (NDPR) and related frameworks", "Only private company policies", "International laws only"], "answer": 1}, {"num": 290, "q": "The role of the library in promoting internet literacy in Nigeria includes:", "options": ["Discouraging internet use", "Training users on effective and ethical internet use", "Replacing internet with physical books", "Restricting access to computers"], "answer": 1}, {"num": 291, "q": "Distance learning programs in Nigerian universities have expanded due to:", "options": ["Reduction in student enrollments", "Internet connectivity enabling online course delivery and virtual classrooms", "Decrease in available lecturers only", "Government restrictions on physical campuses"], "answer": 1}, {"num": 292, "q": "Which of the following best describes internet usage trends in Nigeria?", "options": ["Usage is declining due to high costs", "Mobile internet usage is growing rapidly with increasing smartphone penetration", "Usage is restricted to urban elites only", "Only government officials use the internet"], "answer": 1}, {"num": 293, "q": "The use of internet in Nigerian healthcare has supported:", "options": ["Manual health record keeping only", "Telemedicine, health information portals, and digital record management", "Physical health campaigns exclusively", "Importing medical equipment only"], "answer": 1}, {"num": 294, "q": "Nigerian students use the internet primarily for:", "options": ["Gaming only", "Academic research, e-learning, and communication with peers and lecturers", "Political activism exclusively", "Entertainment only"], "answer": 1}, {"num": 295, "q": "Which of the following challenges affects internet use in Nigerian academic libraries?", "options": ["Excessive bandwidth", "Inadequate funding for subscriptions to online databases and unreliable connectivity", "Too many computers available", "Lack of student interest"], "answer": 1}, {"num": 296, "q": "Open access initiatives benefit Nigerian researchers by:", "options": ["Restricting access to international journals", "Allowing free access to scholarly publications reducing cost barriers", "Limiting research to local topics only", "Requiring high publication fees always"], "answer": 1}, {"num": 297, "q": "The Nigerian government's role in expanding internet access includes:", "options": ["Blocking all foreign websites", "Developing policies, funding infrastructure, and promoting digital literacy programs", "Limiting internet to government agencies", "Taxing all internet transactions heavily"], "answer": 1}, {"num": 298, "q": "Which of the following is a significant benefit of internet use in Nigeria's educational sector?", "options": ["Reducing classroom interaction", "Expanding access to global educational resources and enabling collaborative research", "Eliminating the need for textbooks entirely", "Replacing all lecturers with AI systems"], "answer": 1}, {"num": 299, "q": "Information and Communication Technology (ICT) policy in Nigeria is overseen by:", "options": ["The Nigerian Stock Exchange", "The Federal Ministry of Communications and Digital Economy", "The Central Bank of Nigeria", "The National Universities Commission alone"], "answer": 1}, {"num": 300, "q": "The use of Zoom, Google Meet, and Microsoft Teams in Nigerian universities demonstrates:", "options": ["Abandonment of physical education", "Adoption of internet-based video conferencing for teaching, learning, and meetings", "Restriction of student-lecturer communication", "The end of library services"], "answer": 1}, {"num": 301, "q": "Future growth of internet usage in Nigeria depends most on:", "options": ["Reducing the national population", "Improving infrastructure, lowering costs, increasing digital literacy, and reliable electricity", "Blocking foreign websites", "Limiting mobile phone ownership"], "answer": 1}];
+
+const CHAPTERS = [
+  {upto:45, name:"Ch. 1 — Intro to Internet Searching"},
+  {upto:90, name:"Ch. 2 — Computer Networks"},
+  {upto:135, name:"Ch. 3 — Navigation & Search Tools"},
+  {upto:180, name:"Ch. 4 — Uses of the Internet"},
+  {upto:225, name:"Ch. 5 — The Email"},
+  {upto:266, name:"Ch. 6 — Info Searching Process"},
+  {upto:301, name:"Ch. 7 — Internet Usage in Nigeria"}
+];
+function chapterFor(num){
+  for(const c of CHAPTERS){ if(num<=c.upto) return c.name; }
+  return "Chapter";
+}
+
+let sessionQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let answered = false;
+let sessionAnswers = [];
+let lastConfig = {count:30, shuffleQ:true, shuffleO:true};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// ---- Setup screen ----
+const countGrid = document.getElementById('countGrid');
+const customCount = document.getElementById('customCount');
+const applyCustom = document.getElementById('applyCustom');
+const startBtn = document.getElementById('startBtn');
+const shuffleQEl = document.getElementById('shuffleQ');
+const shuffleOEl = document.getElementById('shuffleO');
+
+let selectedCount = 30;
+
+function setSelectedCount(n, sourceBtn){
+  selectedCount = Math.max(1, Math.min(301, n));
+  document.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('active'));
+  if(sourceBtn) sourceBtn.classList.add('active');
+  startBtn.textContent = `Begin session — ${selectedCount} question${selectedCount>1?'s':''}`;
+}
+
+countGrid.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.count-btn');
+  if(!btn) return;
+  customCount.value = '';
+  setSelectedCount(parseInt(btn.dataset.count,10), btn);
+});
+
+applyCustom.addEventListener('click', ()=>{
+  const v = parseInt(customCount.value,10);
+  if(!v || v<1) return;
+  setSelectedCount(v, null);
+});
+
+startBtn.addEventListener('click', ()=>{
+  lastConfig = {
+    count: selectedCount,
+    shuffleQ: shuffleQEl.checked,
+    shuffleO: shuffleOEl.checked
+  };
+  startSession(lastConfig);
+});
+
+function buildSession(config){
+  let pool = config.shuffleQ ? shuffle(QUESTIONS) : QUESTIONS.slice();
+  pool = pool.slice(0, config.count);
+
+  sessionQuestions = pool.map(q=>{
+    let optionOrder = [0,1,2,3];
+    if(config.shuffleO) optionOrder = shuffle(optionOrder);
+    return {
+      num: q.num,
+      q: q.q,
+      options: optionOrder.map(i=>q.options[i]),
+      answerIndex: optionOrder.indexOf(q.answer)
+    };
+  });
+}
+
+function startSession(config){
+  buildSession(config);
+  currentIndex = 0;
+  score = 0;
+  answered = false;
+  sessionAnswers = [];
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  renderQuestion();
+}
+
+// ---- Quiz screen ----
+const qEyebrow = document.getElementById('qEyebrow');
+const qText = document.getElementById('qText');
+const optionsList = document.getElementById('optionsList');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const progressText = document.getElementById('progressText');
+const scoreText = document.getElementById('scoreText');
+const progressFill = document.getElementById('progressFill');
+const chapterTab = document.getElementById('chapterTab');
+const catno = document.getElementById('catno');
+
+function renderQuestion(){
+  answered = false;
+  feedback.textContent = '';
+  feedback.className = 'feedback';
+  nextBtn.disabled = true;
+
+  const total = sessionQuestions.length;
+  const item = sessionQuestions[currentIndex];
+
+  progressText.textContent = `Card ${currentIndex+1} of ${total}`;
+  scoreText.textContent = `Score: ${score}`;
+  progressFill.style.width = ((currentIndex)/total*100) + '%';
+  chapterTab.textContent = chapterFor(item.num);
+  catno.textContent = `CAT. NO. Q-${String(item.num).padStart(3,'0')}`;
+
+  qEyebrow.textContent = `Question ${currentIndex+1} of ${total}`;
+  qText.textContent = item.q;
+
+  optionsList.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  item.options.forEach((opt, idx)=>{
+    const li = document.createElement('li');
+    li.className = 'option';
+    li.innerHTML = `<span class="letter">${letters[idx]}</span><span class="otext">${opt}</span>`;
+    li.addEventListener('click', ()=> selectOption(idx, li));
+    optionsList.appendChild(li);
+  });
+
+  nextBtn.textContent = (currentIndex === total-1) ? 'See results' : 'Next question';
+}
+
+function selectOption(idx, li){
+  if(answered) return;
+  answered = true;
+  const item = sessionQuestions[currentIndex];
+  const correctIdx = item.answerIndex;
+  const isCorrect = idx === correctIdx;
+
+  const allOpts = optionsList.querySelectorAll('.option');
+  allOpts.forEach((el,i)=>{
+    el.classList.add('disabled');
+    if(i === correctIdx) el.classList.add('correct');
+    if(i === idx && !isCorrect) el.classList.add('incorrect');
+    if(i === idx) el.classList.add('chosen');
+  });
+
+  if(isCorrect){
+    score++;
+    feedback.textContent = 'Correct.';
+    feedback.classList.add('good');
+  } else {
+    const letters = ['A','B','C','D'];
+    feedback.textContent = `Not quite — correct answer is ${letters[correctIdx]}.`;
+    feedback.classList.add('bad');
+  }
+
+  scoreText.textContent = `Score: ${score}`;
+  sessionAnswers.push({
+    q: item.q,
+    options: item.options,
+    chosen: idx,
+    correct: correctIdx,
+    isCorrect
+  });
+
+  nextBtn.disabled = false;
+}
+
+nextBtn.addEventListener('click', ()=>{
+  const total = sessionQuestions.length;
+  if(currentIndex < total-1){
+    currentIndex++;
+    renderQuestion();
+  } else {
+    progressFill.style.width = '100%';
+    showResults();
+  }
+});
+
+// ---- Results screen ----
+const finalScore = document.getElementById('finalScore');
+const finalPct = document.getElementById('finalPct');
+const remark = document.getElementById('remark');
+const reviewList = document.getElementById('reviewList');
+
+function remarkFor(pct){
+  if(pct === 100) return "Perfect card catalog recall. Nothing missed.";
+  if(pct >= 85) return "Strong command of the material — minor gaps only.";
+  if(pct >= 70) return "Solid grasp overall. Review the missed items below.";
+  if(pct >= 50) return "You're halfway there. Revisit the weaker chapters.";
+  return "Worth another pass through the source material before the next attempt.";
+}
+
+function showResults(){
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+
+  const total = sessionQuestions.length;
+  const pct = Math.round((score/total)*100);
+  finalScore.innerHTML = `${score}<sup>/${total}</sup>`;
+  finalPct.textContent = `${pct}% correct`;
+  remark.textContent = remarkFor(pct);
+
+  reviewList.innerHTML = '';
+  const missed = sessionAnswers.filter(a=>!a.isCorrect);
+  if(missed.length === 0){
+    const li = document.createElement('li');
+    li.className = 'review-item';
+    li.innerHTML = `<div class="review-q">No missed questions to review. Well done.</div>`;
+    reviewList.appendChild(li);
+  } else {
+    const letters = ['A','B','C','D'];
+    missed.forEach(a=>{
+      const li = document.createElement('li');
+      li.className = 'review-item';
+      li.innerHTML = `
+        <div class="review-q">${a.q}</div>
+        <div class="review-row your"><b>YOU</b>${letters[a.chosen]}. ${a.options[a.chosen]}</div>
+        <div class="review-row right"><b>CORRECT</b>${letters[a.correct]}. ${a.options[a.correct]}</div>
+      `;
+      reviewList.appendChild(li);
+    });
+  }
+}
+
+document.getElementById('retakeSameBtn').addEventListener('click', ()=>{
+  startSession(lastConfig);
+});
+document.getElementById('newSessionBtn').addEventListener('click', ()=>{
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('setup').classList.remove('hidden');
+  catno.textContent = 'CAT. NO. INS-301';
+});
+
+// init default selection state
+setSelectedCount(30, document.querySelector('.count-btn[data-count="30"]'));
+</script>
+</body>
+</html>
